@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Calibri, sans-serif;
+           background-color: darkseagreen;
+        }
+        .container {
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Chào mừng bạn đã đến với Game Đua xe</h1>
+    <button onclick="startGame()" style="border-radius: 20px; color: silver; background-color: royalblue">Bắt Đầu</button>
+</div>
+
+<script>
+    function startGame() {
+        window.location.href = 'game.html';
+    }
+</script>
+</body>
+</html>
