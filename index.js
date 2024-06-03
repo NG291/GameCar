@@ -15,12 +15,11 @@ const slowCarHeight = 100;
 let slowCarX = canvas.width / 2 - slowCarWidth / 2;
 let slowCarY = -slowCarHeight;
 const slowCarSpeed = 2;
-
 const carWidth = 50;
 const carHeight = 100;
 let carX = canvas.width / 2 - carWidth / 2;
 let carY = canvas.height - carHeight - 20;
-const carSpeed = 5;
+const carSpeed = 7;
 
 const obstacles = [];
 const obstacleWidth = 50;
@@ -65,6 +64,11 @@ function stopMoving(e) {
 let bgY1 = 0; // Vị trí Y của phần trên của hình ảnh path.png
 let bgY2 = -canvas.height; // Vị trí Y của phần dưới của hình ảnh path.png
 
+function drawBackground() {
+    // Vẽ hai phần của hình ảnh path.png
+    ctx.drawImage(bgImg, 0, bgY1, canvas.width, canvas.height);
+    ctx.drawImage(bgImg, 0, bgY2, canvas.width, canvas.height);
+}
 function updateBackground() {
     // Dịch chuyển hai phần của hình ảnh path.png theo chiều dọc
     bgY1 += obstacleSpeed;
@@ -78,13 +82,7 @@ function updateBackground() {
         bgY2 = bgY1 - canvas.height;
     }
 }
-
-function drawBackground() {
-    // Vẽ hai phần của hình ảnh path.png
-    ctx.drawImage(bgImg, 0, bgY1, canvas.width, canvas.height);
-    ctx.drawImage(bgImg, 0, bgY2, canvas.width, canvas.height);
-}
-
+// ham cap nhap vi tri
 function updateCarPosition() {
     if (upPressed && carY > 0) {
         carY -= carSpeed;
@@ -93,12 +91,12 @@ function updateCarPosition() {
         carY += carSpeed;
     }
 }
-
+// ham truong ngai vat
 function createObstacle() {
     const obstacleX = Math.random() * (canvas.width - obstacleWidth);
     obstacles.push({ x: obstacleX, y: 0 });
 }
-
+// Ham tao chuong ngai vat
 function updateObstacles() {
     for (let i = 0; i < obstacles.length; i++) {
         obstacles[i].y += obstacleSpeed;
@@ -118,43 +116,22 @@ function updateObstacles() {
         }
     }
 }
-
+// ham  ve chương ngai khai tren canvas
 function drawCar() {
     ctx.drawImage(carImg, carX, carY, carWidth, carHeight);
 }
-
-function drawObstacles() {
-    for (let i = 0; i < obstacles.length; i++) {
-        ctx.drawImage(obstacleImg, obstacles[i].x, obstacles[i].y, obstacleWidth, obstacleHeight);
-    }
-}
-
-function drawScore() {
-    ctx.fillStyle = 'white';
-    ctx.font = '20px Arial';
-    ctx.fillText('Score: ' + score, 10, 30);
-}
-function saveHighScores() {
-    localStorage.setItem('highScores', JSON.stringify(highScores));
-}
-function loadHighScores() {
-    const storedScores = localStorage.getItem('highScores');
-    if (storedScores) {
-        highScores = JSON.parse(storedScores);
-    }
-}
-
-
+// hàm vượt chương ngai vat
+let slowCarPassed = false
 function updateSlowCarPosition() {
     slowCarY += slowCarSpeed;
     if (slowCarY > canvas.height) {
-        slowCarY = -slowCarHeight;
+        slowCarY = slowCarHeight;
         slowCarX = Math.random() * (canvas.width - slowCarWidth);
     }
     // Nếu người chơi vượt qua slowcar mà không va chạm
     if (slowCarY > canvas.height && !slowCarPassed) {
         slowCarPassed = true;
-        score += 5; // Tăng điểm nhiều hơn khi vượt qua slowcar
+        score += 2; //
     }
     // Nếu va chạm với slowcar
     if (slowCarX < carX + carWidth &&
@@ -168,29 +145,41 @@ function updateSlowCarPosition() {
 function drawSlowCar() {
     ctx.drawImage(slowcarImg, slowCarX, slowCarY, slowCarWidth, slowCarHeight);
 }
+// ham ve cac chương ngại vat len canvas
+function drawObstacles() {
+    for (let i = 0; i < obstacles.length; i++) {
+        ctx.drawImage(obstacleImg, obstacles[i].x, obstacles[i].y, obstacleWidth, obstacleHeight);
+    }
+}
+// ham diem so len canvas
+function drawScore() {
+    ctx.fillStyle = 'white';
+    ctx.font = '20px Arial';
+    ctx.fillText('Score: ' + score, 10, 30);
+}
+// ham lưu tru diem
+function saveHighScores() {
+    localStorage.setItem('highScores', JSON.stringify(highScores));
+}
+// ham lay diem so cao
+function loadHighScores() {
+    const storedScores = localStorage.getItem('highScores');
+    if (storedScores) {
+        highScores = JSON.parse(storedScores);
+    }
+}
+// Hàm xóa điểm
 function clearHighScores() {
     localStorage.removeItem('highScores');
     highScores = [];
     updateScoreList();
 }
-function resetGame() {
-    score = 0;
-    carX = canvas.width / 2 - carWidth / 2;
-    carY = canvas.height - carHeight - 20;
-    gameOver = false;
-    obstacles.length = 0;
-    slowCarX = canvas.width / 2 - slowCarWidth / 2;
-    slowCarY = -slowCarHeight;
-    document.getElementById('scoreForm').style.display = 'none';
-    updateScoreList();
-    saveHighScores();
-}
-
+// Ham ve lai game
 function drawGameOver() {
     document.getElementById('finalScore').textContent = score;
     document.getElementById('scoreForm').style.display = 'block';
 }
-
+// Cap nhat danh sach diem
 function updateScoreList() {
     const scoreList = document.getElementById('scoreList');
     scoreList.innerHTML = '';
@@ -237,9 +226,22 @@ function updateLevel() {
     if (score >= levelThreshold * level) {
         level++;
         // Thực hiện các thay đổi cần thiết khi tăng cấp độ
-        obstacleSpeed += 3; // Ví dụ: tăng tốc độ của vật cản
+        obstacleSpeed += 3;
+        // Ví dụ: tăng tốc độ của vật cản
         alert('Tăng độ khó ' + level);
     }
+}
+function resetGame() {
+    score = 0;
+    carX = canvas.width / 2 - carWidth / 2;
+    carY = canvas.height - carHeight - 20;
+    gameOver = false;
+    obstacles.length = 0;
+    slowCarX = canvas.width / 2 - slowCarWidth / 2;
+    slowCarY = -slowCarHeight;
+    document.getElementById('scoreForm').style.display = 'none';
+    updateScoreList();
+    saveHighScores();
 }
 
 function gameLoop() {
